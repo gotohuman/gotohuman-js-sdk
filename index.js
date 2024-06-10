@@ -46,10 +46,9 @@ class AiFlow {
     if (!!triggerEvent && (triggerEvent !== this.onTrigger)) return null; // there is a triggerEvent but its not for this agent
     try {
       this.gth = new GoToHuman({apiKey: apiKey, agentId: this.agentId, ...(runId && {agentRunId: runId}), fetch: this.fetch })
-      console.log("start flow")
       const comingFromUserDecision = !!humanResponse;
       if (!comingFromUserDecision && this.onTrigger != undefined)
-        await this.gth.completedTask({id: this.onTrigger, result: JSON.stringify(actionValues)})
+        await this.gth.completedTask({id: this.onTrigger, result: actionValues})
       let stepInput = actionValues;
       console.log(`comingFromUserDecision ${comingFromUserDecision} taskId ${taskId} taskIndex ${this.steps.findIndex(val => val.id === taskId)}`)
       const firstStepToRun = comingFromUserDecision ? (this.steps.findIndex(val => val.id === taskId) + 1) : 0;
