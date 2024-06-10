@@ -10,7 +10,6 @@ class GoToHuman {
 
     async callGoToHuman({state, params, stepResult = null, actionValues = null, allowEditing = false}) {
         const url = "https://api.gotohuman.com/postRunState";
-        console.log("working with GTHURL: " + url);
         const data = {
             apiKey: this.apiKey,
             agentId: this.agentId,

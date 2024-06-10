@@ -34,7 +34,7 @@ class AiFlow {
       if (!!options && options.onlyServeResults) {
         await this.gth.serveToHuman({taskId: id, taskName: name, actionValues: actionValuesToSend})
       } else {
-        await this.gth.requestHumanApproval({taskId: id, taskName: name, actionValues: actionValuesToSend, ...(!!options && !!options.allowEditing && {allowEditing: options.allowEditing})})
+        await this.gth.requestHumanApproval({taskId: id, taskName: name, actionValues: actionValuesToSend, ...(!!options && (options.allowEditing != null) && {allowEditing: options.allowEditing})})
       }
       return null;
     }
