@@ -55,6 +55,8 @@ class AiFlow {
       console.log(`firstStepToRun ${firstStepToRun} of entries ${this.steps}`)
       const stepsQueued = this.steps.slice(firstStepToRun);
       for (const [index, step] of stepsQueued.entries()) {
+        if (!!humanResponse && (humanResponse == 'human_rejected'))
+          break;
         console.log(`run step ${index} ${step.id}`)
         stepInput = await step.stepFn({ flow: this, input: stepInput, infos: {approved: (!!humanResponse && (humanResponse == 'human_approved'))} });
         if (step.interrupt) break;
