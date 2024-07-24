@@ -12,6 +12,11 @@ class AiFlow {
     this.fetch = fetch;
   }
 
+  static SKIP_TO_STEP = "ai_flow_skip";
+  SKIP_TO(stepId, result) {
+    return { type: AiFlow.SKIP_TO_STEP, skipTo: stepId, ...(result && {result: result}) };
+  }
+
   step({id, name = null, options = {}, fn}) {
     if (id == undefined || fn == undefined)
       throw new Error('id and fn are required');
@@ -20,7 +25,8 @@ class AiFlow {
     const stepFn = async(args) => {
       await this.gth.startedTask({id: id, name: name})
       const result = await fn(args);
-      await this.gth.completedTask({id: id, name: name, result: result})
+      const resultToSend = (typeof result === 'object' && result.type && typeof result.type === 'string' && result.type.startsWith('ai_flow') && result.result) ? result.result : result;
+      await this.gth.completedTask({id: id, name: name, result: resultToSend})
       return result;
     }
     this.steps.push({ id, name, stepFn });
@@ -41,7 +47,7 @@ class AiFlow {
     this.steps.push({ id, name, stepFn, interrupt: true });
   }
 
-  async executeSteps({apiKey, agentId, triggerEvent, runId, actionValues, taskId, humanResponse}) {
+  async executeSteps({apiKey, agentId, triggerEvent, runId, actionValues, config, taskId, humanResponse}) {
     if (!!agentId && (agentId !== this.agentId)) return null; //agentId explicitely targeted, but its not this agent
     if (!!triggerEvent && (triggerEvent !== this.onTrigger)) return null; // there is a triggerEvent but its not for this agent
     try {
@@ -52,20 +58,25 @@ class AiFlow {
       let stepInput = actionValues;
       console.log(`comingFromUserDecision ${comingFromUserDecision} taskId ${taskId} taskIndex ${this.steps.findIndex(val => val.id === taskId)}`)
       const firstStepToRun = comingFromUserDecision ? (this.steps.findIndex(val => val.id === taskId) + 1) : 0;
-      console.log(`firstStepToRun ${firstStepToRun} of entries ${this.steps}`)
+      console.log(`firstStepToRun ${firstStepToRun} of entries ${this.steps.map((step)=>step.id)}`)
       const stepsQueued = this.steps.slice(firstStepToRun);
       for (const [index, step] of stepsQueued.entries()) {
         if (!!humanResponse && (humanResponse == 'human_rejected'))
           break;
-        console.log(`run step ${index} ${step.id}`)
-        stepInput = await step.stepFn({ flow: this, input: stepInput, infos: {approved: (!!humanResponse && (humanResponse == 'human_approved'))} });
+        console.log(`stepInput ${JSON.stringify(stepInput)}`)
+        if (stepInput && stepInput.type && stepInput.type === AiFlow.SKIP_TO_STEP) {
+          if (step.id !== stepInput.skipTo) continue
+          stepInput = stepInput.result
+        }
+        console.log(`run step ${index} ${step.id} ${JSON.stringify(stepInput)}`)
+        stepInput = await step.stepFn({ flow: this, input: stepInput, ...(config && {config: config}), infos: {approved: (!!humanResponse && (humanResponse == 'human_approved'))} });
         if (step.interrupt) break;
         if (index == (stepsQueued.length - 1))
           await this.gth.archive();
       }
       return {success: true, ...(stepInput && {lastResult: stepInput})};
     } catch (err) {
-      return {error: true, errorMsg: err.message}
+      return {error: true, errorName: err.name, errorMsg: err.message}
     }
   }
 }
