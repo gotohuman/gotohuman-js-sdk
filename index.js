@@ -80,6 +80,7 @@ class AiFlow {
       }
       return {success: true, ...(stepInput && {lastResult: stepInput})};
     } catch (err) {
+      console.error("Throwing error", err)
       return {error: true, errorName: err.name, errorMsg: err.message}
     }
   }
