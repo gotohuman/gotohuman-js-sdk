@@ -39,6 +39,8 @@ class AiFlow {
       console.log(`gotoHuman send actionValues: ${JSON.stringify(actionValuesToSend)}`);
       if (!!options && options.onlyServeResults) {
         await this.gth.serveToHuman({taskId: id, taskName: name, actionValues: actionValuesToSend})
+      } else if (!!options && options.multiSelectFanOut) {
+        await this.gth.requestHumanMultiSelectFanOut({taskId: id, taskName: name, actionValues: actionValuesToSend})
       } else {
         await this.gth.requestHumanApproval({taskId: id, taskName: name, actionValues: actionValuesToSend, ...(!!options && (options.allowEditing != null) && {allowEditing: options.allowEditing})})
       }
@@ -47,11 +49,11 @@ class AiFlow {
     this.steps.push({ id, name, stepFn, interrupt: true });
   }
 
-  async executeSteps({apiKey, agentId, triggerEvent, runId, actionValues, config, taskId, humanResponse}) {
+  async executeSteps({apiKey, agentId, triggerEvent, runId, parentRunId, actionValues, config, taskId, humanResponse}) {
     if (!!agentId && (agentId !== this.agentId)) return null; //agentId explicitely targeted, but its not this agent
     if (!!triggerEvent && (triggerEvent !== this.onTrigger)) return null; // there is a triggerEvent but its not for this agent
     try {
-      this.gth = new GoToHuman({apiKey: apiKey, agentId: this.agentId, ...(runId && {agentRunId: runId}), fetch: this.fetch })
+      this.gth = new GoToHuman({apiKey: apiKey, agentId: this.agentId, ...(runId && {agentRunId: runId}), parentRunId: parentRunId, fetch: this.fetch })
       const comingFromUserDecision = !!humanResponse;
       if (!comingFromUserDecision && this.onTrigger != undefined)
         await this.gth.completedTask({id: this.onTrigger, result: actionValues})
@@ -61,8 +63,10 @@ class AiFlow {
       console.log(`firstStepToRun ${firstStepToRun} of entries ${this.steps.map((step)=>step.id)}`)
       const stepsQueued = this.steps.slice(firstStepToRun);
       for (const [index, step] of stepsQueued.entries()) {
-        if (!!humanResponse && (humanResponse == 'human_rejected'))
+        if (!!humanResponse && (humanResponse == 'human_rejected')) {
+          await this.gth.archive();
           break;
+        }
         console.log(`stepInput ${JSON.stringify(stepInput)}`)
         if (stepInput && stepInput.type && stepInput.type === AiFlow.SKIP_TO_STEP) {
           if (step.id !== stepInput.skipTo) continue

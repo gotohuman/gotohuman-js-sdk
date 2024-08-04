@@ -1,20 +1,23 @@
 const { v4: uuidv4 } = require('uuid');
 
 class GoToHuman {
-    constructor({apiKey, agentId, agentRunId = uuidv4(), fetch}) {
+    constructor({apiKey, agentId, agentRunId = uuidv4(), parentRunId = null, fetch}) {
         this.apiKey = apiKey;
         this.agentId = agentId;
         this.agentRunId = agentRunId;
+        this.parentRunId = parentRunId;
         this.fetch = fetch;
     }
 
-    async callGoToHuman({state, params, stepResult = null, actionValues = null, allowEditing = false}) {
+    async callGoToHuman({state, subState, params, stepResult = null, actionValues = null, allowEditing = false}) {
         const url = "https://api.gotohuman.com/postRunState";
         const data = {
             apiKey: this.apiKey,
             agentId: this.agentId,
             agentRunId: this.agentRunId,
+            ...(this.parentRunId && { parentRunId: this.parentRunId }),
             state: state,
+            ...(subState && { subState: subState }),
             ...params,
             ...(stepResult && { result: stepResult }),
             ...(actionValues && { actionValues: actionValues, allowEditing: allowEditing }),
@@ -58,14 +61,21 @@ class GoToHuman {
         }, ...(!!result && { stepResult: result })});
     }
 
-    async requestHumanApproval({taskId = null, taskName = null, taskDesc = null, actionValues = null, allowEditing = true, completedTasks = null}) {
+    async requestHumanApproval({taskId = null, taskName = null, taskDesc = null, actionValues = null, allowEditing = true, completedTasks = null, subState = null}) {
         console.log(`requestHumanApproval ${taskId} ${taskName} ${taskDesc} ${actionValues} ${allowEditing} ${completedTasks}`);
-        await this.callGoToHuman({state: "requested_human_approval", params:{
+        await this.callGoToHuman({state: "requested_human_approval",
+          ...(subState && { subState: subState }),
+          params:{
             ...(taskId && { taskId: taskId }),
             ...(taskName && { taskName: taskName }),
             ...(taskDesc && { taskDesc: taskDesc }),
             ...(completedTasks && { completedTasks: completedTasks })
-        },...(actionValues !== null && { actionValues: actionValues }), allowEditing: allowEditing});
+          },...(actionValues !== null && { actionValues: actionValues }), allowEditing: allowEditing});
+    }
+
+    async requestHumanMultiSelectFanOut({taskId = null, taskName = null, taskDesc = null, actionValues = null, completedTasks = null}) {
+        console.log(`requestHumanMultiSelectFanOut ${taskId} ${taskName} ${taskDesc} ${actionValues} ${completedTasks}`);
+        await this.requestHumanApproval({taskId: taskId, taskName: taskName, taskDesc: taskDesc, actionValues: actionValues, allowEditing: false, completedTasks: completedTasks, subState: "multi_select_fan_out"});
     }
 
     async serveToHuman({taskId = null, taskName = null, taskDesc = null, actionValues = null, completedTasks = null}) {
