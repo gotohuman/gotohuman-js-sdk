@@ -1,7 +1,5 @@
-const { v4: uuidv4 } = require('uuid');
-
 class GoToHuman {
-    constructor({apiKey, agentId, agentRunId = uuidv4(), parentRunId = null, fetch}) {
+    constructor({apiKey, agentId, agentRunId = null, parentRunId = null, fetch}) {
         this.apiKey = apiKey;
         this.agentId = agentId;
         this.agentRunId = agentRunId;
@@ -14,7 +12,7 @@ class GoToHuman {
         const data = {
             apiKey: this.apiKey,
             agentId: this.agentId,
-            agentRunId: this.agentRunId,
+            ...(this.agentRunId && { agentRunId: this.agentRunId }),
             ...(this.parentRunId && { parentRunId: this.parentRunId }),
             state: state,
             ...(subState && { subState: subState }),
@@ -33,6 +31,7 @@ class GoToHuman {
         if (response.ok) {
             const responseData = await response.json();
             console.log("Request successful! Response:", responseData);
+            this.agentRunId = responseData.agentRunId; // in case a new run id was generated server-side, we can set it here to be used in consecutive calls for this run
             return responseData;
         } else {
             const responseText = await response.text();
@@ -93,4 +92,4 @@ class GoToHuman {
     }
 }
 
-module.exports = GoToHuman;
+export default GoToHuman;

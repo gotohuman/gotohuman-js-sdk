@@ -1,7 +1,8 @@
 {
   "name": "gotohuman",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "gotoHuman.com - Build AI agent workflows orchestrated by humans",
+  "type": "module",
   "main": "index.js",
   "scripts": {},
   "keywords": [
@@ -16,6 +17,5 @@
   "author": "Till Simon <till@gotohuman.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "uuid": "^9.0.1"
   }
 }

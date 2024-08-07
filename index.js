@@ -1,5 +1,5 @@
 import GoToHuman from "./gth";
-
+export { default as GoToHuman } from './gth.js';
 class AiFlow {
   constructor({
     onTrigger,
