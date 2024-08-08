@@ -90,6 +90,20 @@ class GoToHuman {
     async archive() {
       await this.callGoToHuman({state: "archived"})
     }
+
+    static handleHumanResponse(responseBody, callback) {
+      if (!callback || !responseBody) return;
+      console.log("respBody ", responseBody);
+      const {apiKey, agentId, triggerEvent, runId, parentRunId, actionValues, config, taskId, humanResponse} = responseBody || {};
+      if (callback.onHumanResponse) {
+        callback.onHumanResponse(humanResponse == 'human_approved', responseBody);
+      }
+      if (humanResponse == 'human_approved' && callback.onHumanApproved) {
+        callback.onHumanApproved(responseBody);
+      } else if (humanResponse == 'human_rejected' && callback.onHumanRejected) {
+        callback.onHumanRejected(responseBody);
+      }
+    }
 }
 
 export default GoToHuman;

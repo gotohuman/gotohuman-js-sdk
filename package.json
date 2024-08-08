@@ -1,6 +1,6 @@
 {
   "name": "gotohuman",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "gotoHuman.com - Build AI agent workflows orchestrated by humans",
   "type": "module",
   "main": "index.js",
