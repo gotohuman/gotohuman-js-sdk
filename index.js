@@ -55,8 +55,11 @@ class AiFlow {
     try {
       this.gth = new GoToHuman({apiKey: apiKey, agentId: this.agentId, ...(runId && {agentRunId: runId}), parentRunId: parentRunId, fetch: this.fetch })
       const comingFromUserDecision = !!humanResponse;
-      if (!comingFromUserDecision && this.onTrigger != undefined)
+      if (!comingFromUserDecision && this.onTrigger != undefined) {
         await this.gth.completedTask({id: this.onTrigger, result: actionValues})
+      } else if (!comingFromUserDecision && agentId != undefined && actionValues) {
+        await this.gth.completedTask({id: "triggered", result: actionValues})
+      }
       let stepInput = actionValues;
       console.log(`comingFromUserDecision ${comingFromUserDecision} taskId ${taskId} taskIndex ${this.steps.findIndex(val => val.id === taskId)}`)
       const firstStepToRun = comingFromUserDecision ? (this.steps.findIndex(val => val.id === taskId) + 1) : 0;
