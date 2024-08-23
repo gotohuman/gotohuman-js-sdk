@@ -1,10 +1,33 @@
 {
   "name": "gotohuman",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "gotoHuman.com - Build AI agent workflows orchestrated by humans",
   "type": "module",
-  "main": "index.js",
-  "scripts": {},
+  "main": "./dist/cjs/index.js",
+  "scripts": {
+    "clean": "shx rm -rf ./dist",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && shx mv dist/esm/index.js dist/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build"
+  },
+  "files": [
+    "dist/**/*",
+    "LICENSE"
+  ],
+  "types": "./dist/cjs/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/types/index.d.ts",
+        "default": "./dist/esm/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/types/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
   "keywords": [
     "ai",
     "ai agents",
@@ -16,6 +39,8 @@
   ],
   "author": "Till Simon <till@gotohuman.com>",
   "license": "GPL-3.0",
-  "dependencies": {
+  "devDependencies": {
+    "shx": "^0.3.4",
+    "typescript": "^5.5.4"
   }
 }

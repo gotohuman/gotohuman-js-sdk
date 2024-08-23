@@ -21,6 +21,9 @@ node_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# TS gen
+dist
+
 # Optional npm cache directory
 .npm
 
