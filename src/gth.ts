@@ -15,10 +15,11 @@ export interface TaskStartedParams {
 }
 
 export interface TaskCompletedParams {
-    id?: string;
-    name?: string;
-    desc?: string;
-    result?: string | string[];
+  taskId?: string;
+  taskName?: string;
+  taskDesc?: string;
+  result?: string | string[] | unknown;
+  type?: string;
 }
 
 export interface RequestHumanApprovalBaseParams {
@@ -56,7 +57,8 @@ interface TaskCompletedCallParams extends CallParams {
     taskId?: string;
     taskName?: string;
     taskDesc?: string;
-    result?: string | string[];
+    result?: string | string[] | unknown;
+    type?: string;
 }
 
 interface RequestHumanApprovalCallParams extends CallParams {
@@ -172,14 +174,15 @@ export class GoToHuman {
       await this.callGoToHuman(callParams);
   }
 
-  async completedTask({ id, name, desc, result }: TaskCompletedParams = {}): Promise<void> {
-      const idToSend = id || this.lastTaskId;
+  async completedTask({ taskId, taskName, taskDesc, type, result }: TaskCompletedParams = {}): Promise<void> {
+      const idToSend = taskId || this.lastTaskId;
       console.log(`completedTask ${idToSend}`, result);
       const callParams: TaskCompletedCallParams = {
         state: "task_done",
         taskId: idToSend,
-        taskName: name,
-        taskDesc: desc,
+        taskName: taskName,
+        taskDesc: taskDesc,
+        type: type,
         result: result
       }
       await this.callGoToHuman(callParams);

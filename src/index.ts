@@ -122,7 +122,7 @@ export class AiFlow {
       await this.gth.startedTask({ id: id, name: name });
       const result = await fn(args);
       const resultToSend = (result == null) ? undefined : (Array.isArray(result) ? this.santitizeStrArray(result) : this.santitizeStrValue(this.isSkipResult(result) ? result.result : result));
-      await this.gth.completedTask({ id: id, name: name, result: resultToSend });
+      await this.gth.completedTask({ taskId: id, taskName: name, result: resultToSend });
       return result;
     }
     this.steps.push({ id, name, stepFn });
@@ -170,9 +170,9 @@ export class AiFlow {
       this.gth = new GoToHuman({ apiKey: apiKey || apiKeyBackup, agentId: this.agentId, agentRunId: runId, parentRunId: parentRunId, fetch: this.fetch });
       const comingFromUserDecision = !!humanResponse;
       if (!comingFromUserDecision && this.onTrigger != undefined) {
-        await this.gth.completedTask({ id: this.onTrigger, result: actionValues?.map(val => val.text || 'NO_TEXT') });
+        await this.gth.completedTask({ taskId: this.onTrigger, result: actionValues?.map(val => val.text || 'NO_TEXT') });
       } else if (!comingFromUserDecision && agentId != undefined && actionValues) {
-        await this.gth.completedTask({ id: "triggered", result: actionValues?.map(val => val.text || 'NO_TEXT') });
+        await this.gth.completedTask({ taskId: "triggered", result: actionValues?.map(val => val.text || 'NO_TEXT') });
       }
       let stepInput: any = actionValues;
       const firstStepToRun = comingFromUserDecision ? (this.steps.findIndex(val => val.id === taskId) + 1) : 0;
