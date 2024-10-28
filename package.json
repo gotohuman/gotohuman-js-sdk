@@ -1,7 +1,7 @@
 {
   "name": "gotohuman",
-  "version": "0.2.1",
-  "description": "gotoHuman.com - Build AI agent workflows orchestrated by humans",
+  "version": "0.2.2",
+  "description": "gotoHuman.com - Use forms to let your team review AI‑generated content, approve actions of AI agents or provide input",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "scripts": {
@@ -35,7 +35,8 @@
     "ai workflow automation",
     "llm automation",
     "ai orchestration",
-    "human-in-the-loop"
+    "human-in-the-loop",
+    "form builder"
   ],
   "author": "Till Simon <till@gotohuman.com>",
   "license": "GPL-3.0",
