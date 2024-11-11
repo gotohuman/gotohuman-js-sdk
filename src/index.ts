@@ -38,16 +38,18 @@ export class Review {
   /**
    * Add a field value to the review
    */
-  addFieldData(fieldName: string, value: JsonValue): Review {
-    this.fields[fieldName] = value;
+  addFieldData(fieldName: string, value?: JsonValue): Review {
+    if (value)
+      this.fields[fieldName] = value;
     return this;
   }
 
   /**
    * Set multiple field values at once
    */
-  setFieldsData(fields: FormFields): Review {
-    this.fields = { ...this.fields, ...fields };
+  setFieldsData(fields?: FormFields): Review {
+    if (fields)
+      this.fields = { ...this.fields, ...fields };
     return this;
   }
 
@@ -60,10 +62,20 @@ export class Review {
   }
 
   /**
-   * Add a field to the review
+   * Add a field to the meta data
    */
-  addMetaData(attribute: string, value: JsonValue): Review {
-    this.meta[attribute] = value;
+  addMetaData(attribute: string, value?: JsonValue): Review {
+    if (value)
+      this.meta[attribute] = value;
+    return this;
+  }
+
+  /**
+   * Set multiple meta field values at once
+   */
+  setMetaData(fields?: FormFields): Review {
+    if (fields)
+      this.meta = { ...this.meta, ...fields };
     return this;
   }
 
