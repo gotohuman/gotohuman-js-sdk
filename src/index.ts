@@ -83,6 +83,8 @@ export class Review {
    * Send the review request to the API
    */
   async sendRequest(): Promise<ReviewResponse> {
+    const packageJson = require('../package.json');
+    const version = packageJson.version;
     const response = await this.fetchImpl(`${this.baseUrl}/requestReview`, {
       method: 'POST',
       headers: {
@@ -93,7 +95,9 @@ export class Review {
         formId: this.formId,
         fields: this.fields,
         meta: this.meta,
-        millis: Date.now()
+        millis: Date.now(),
+        origin: "ts-sdk",
+        originV: version,
       }),
     });
 
