@@ -85,28 +85,32 @@ export class Review {
   async sendRequest(): Promise<ReviewResponse> {
     const packageJson = require('../package.json');
     const version = packageJson.version;
-    const response = await this.fetchImpl(`${this.baseUrl}/requestReview`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': `${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        formId: this.formId,
-        fields: this.fields,
-        meta: this.meta,
-        millis: Date.now(),
-        origin: "ts-sdk",
-        originV: version,
-      }),
-    });
+    try {
+      const response = await this.fetchImpl(`${this.baseUrl}/requestReview`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': `${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          formId: this.formId,
+          fields: this.fields,
+          meta: this.meta,
+          millis: Date.now(),
+          origin: "ts-sdk",
+          originV: version,
+        }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`gotoHuman API request failed: ${error.message || response.statusText}`);
+      if (!response.ok) {
+        const errorMsg = await response.text();
+        throw new Error(`${response.status}: ${errorMsg || response.statusText}`);
+      }
+
+      return response.json();
+    } catch (error: any) {
+      throw new Error(`gotoHuman API request failed: ${error}`);
     }
-
-    return response.json();
   }
 }
 
