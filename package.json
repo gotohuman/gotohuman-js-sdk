@@ -1,7 +1,7 @@
 {
   "name": "gotohuman",
-  "version": "0.2.5",
-  "description": "gotoHuman.com - Use forms to let your team review AI‑generated content, approve actions of AI agents or provide input",
+  "version": "0.2.6",
+  "description": "gotoHuman.com - The easiest way to review AI‑generated content, give approvals, or provide input to your AI workflows.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
