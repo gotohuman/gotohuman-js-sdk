@@ -38,7 +38,7 @@
     "form builder"
   ],
   "author": "Till Simon <till@gotohuman.com>",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "devDependencies": {
     "shx": "^0.3.4",
     "tsup": "^8.3.5",
