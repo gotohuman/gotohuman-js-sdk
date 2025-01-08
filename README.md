@@ -5,3 +5,7 @@
 Set up a fully customized review step capturing any relevant data (text, images, markdown,...) and required human input (buttons, checkboxes, inputs,...). Then trigger it from your application whenever human review from your team is needed.
 
 [Read the docs](https://docs.gotohuman.com/send-requests) for our JS/TS SDK on how to send requests for human review.
+
+#### Example review
+
+![gotoHuman - Human approval example](./img/repo-review-example.jpg)
