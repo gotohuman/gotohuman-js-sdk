@@ -1,8 +1,9 @@
 <div align="center">
 
-![gotoHuman Logo](./img/logo.png)
+<img src="./img/logo.png" alt="gotoHuman Logo" width="360px"/>
 
 </div>
+
 # gotoHuman - Human in the Loop for AI workflows
 
 [gotoHuman](https://gotohuman.com) helps you build production-ready AI workflows by making it really easy to include human approvals. Keep a human in the loop to review AI‑generated content, approve critical actions or provide input.
