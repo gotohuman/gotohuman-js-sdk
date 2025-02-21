@@ -1,7 +1,7 @@
 {
   "name": "gotohuman",
   "version": "0.2.6",
-  "description": "gotoHuman.com - The easiest way to review AI‑generated content, give approvals, or provide input to your AI workflows.",
+  "description": "gotoHuman - The easiest way to review AI‑generated content, give approvals, or provide input to your AI workflows.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -37,8 +37,14 @@
     "human-in-the-loop",
     "form builder"
   ],
+  "homepage": "https://www.gotohuman.com",
+  "repository": "github:gotohuman/gotohuman-js-sdk",
   "author": "Till Simon <till@gotohuman.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gotohuman/gotohuman-js-sdk/issues",
+    "email": "hello@gotohuman.com"
+  },
   "devDependencies": {
     "shx": "^0.3.4",
     "tsup": "^8.3.5",
