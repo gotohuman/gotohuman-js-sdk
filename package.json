@@ -1,6 +1,6 @@
 {
   "name": "gotohuman",
-  "version": "0.2.6",
+  "version": "0.2.9",
   "description": "gotoHuman - The easiest way to review AI‑generated content, give approvals, or provide input to your AI workflows.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -46,6 +46,7 @@
     "email": "hello@gotohuman.com"
   },
   "devDependencies": {
+    "@types/node": "^22.13.10",
     "shx": "^0.3.4",
     "tsup": "^8.3.5",
     "typescript": "^5.6.3"
