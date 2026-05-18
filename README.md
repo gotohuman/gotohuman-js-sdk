@@ -29,13 +29,29 @@ const gotoHuman = new GotoHuman(GOTOHUMAN_API_KEY)
 
 [Read the docs](https://docs.gotohuman.com/send-requests) for more details.
 
+Pass the review template ID from your gotoHuman dashboard.
+
 Example request:
 ```
-const reviewRequest = gotoHuman.createReview(GOTOHUMAN_FORM_ID)
-    .addFieldData("exampleField1", value1)
-    .addFieldData("exampleField2", value2)
+const reviewRequest = gotoHuman.createReview(GOTOHUMAN_TEMPLATE_ID)
+    .setReviewData({
+        exampleField1: value1,
+        exampleField2: value2,
+    })
     .addMetaData("threadId", threadId)
     .assignToUsers(["jess@acme.org"])
+await reviewRequest.sendRequest()
+```
+
+Optionally, set a title, webhook URL, auto-approve flag, or workflow config on the request:
+```
+const reviewRequest = gotoHuman.createReview(GOTOHUMAN_TEMPLATE_ID)
+    .setReviewData({ ... })
+    .setReviewConfig({ someConfigKey: "value" })
+    .setTitle("Review AI draft")
+    .setWebhookUrl("https://your-app.com/webhook")
+    .setAutoApprove(false)
+    .setWorkflow({ runId: "abc123" })
 await reviewRequest.sendRequest()
 ```
 

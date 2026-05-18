@@ -220,17 +220,17 @@ export class GotoHuman {
   }
 
   /**
-   * Initialize a new review with a form ID
+   * Initialize a new review with a review template ID
    */
   createReview(formId: string | undefined): Review {
     if (!formId) {
-      throw new Error('Please pass a form ID');
+      throw new Error('Please pass a review template ID');
     }
     return new Review(formId, this.apiKey, this.baseUrl, this.fetchImpl, this.origin, this.originV);
   }
 
   /**
-   * Fetch all available review forms
+   * Fetch all available review templates
    */
   async fetchReviewForms(): Promise<any> {
     try {
@@ -249,16 +249,16 @@ export class GotoHuman {
 
       return response.json();
     } catch (error: any) {
-      throw new Error(`Failed to fetch review forms: ${error}`);
+      throw new Error(`Failed to fetch review templates: ${error}`);
     }
   }
 
   /**
-   * Fetch the schema for a specific form's fields
+   * Fetch the schema for a specific review template's fields
    */
   async fetchSchemaForFormFields(formId: string): Promise<any> {
     if (!formId) {
-      throw new Error('Please pass a form ID');
+      throw new Error('Please pass a review template ID');
     }
 
     try {
@@ -277,7 +277,7 @@ export class GotoHuman {
 
       return response.json();
     } catch (error: any) {
-      throw new Error(`Failed to fetch form field schema: ${error}`);
+      throw new Error(`Failed to fetch review template field schema: ${error}`);
     }
   }
 
