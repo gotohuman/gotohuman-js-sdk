@@ -1,6 +1,6 @@
 {
   "name": "gotohuman",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "gotoHuman - The easiest way to review agent actions and AI‑generated content.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

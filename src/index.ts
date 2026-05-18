@@ -25,6 +25,7 @@ type GotoHumanConfig = {
 export type ReviewResponse = {
   reviewId: string;
   gthLink?: string;
+  workflowRunId?: string;
 };
 
 
@@ -39,7 +40,7 @@ export class Review {
   private webhookUrl?: string;
   private title?: string;
   private autoApprove?: boolean;
-  private workflow?: Record<string, JsonValue>;
+  private workflowInfo?: Record<string, JsonValue>;
 
   constructor(
     private readonly formId: string,
@@ -99,8 +100,8 @@ export class Review {
     return this;
   }
 
-  setWorkflow(workflow: Record<string, JsonValue>): Review {
-    this.workflow = workflow;
+  setWorkflowInfo(workflowInfo: Record<string, JsonValue>): Review {
+    this.workflowInfo = workflowInfo;
     return this;
   }
 
@@ -175,7 +176,7 @@ export class Review {
           ...(this.webhookUrl !== undefined && {webhookUrl: this.webhookUrl}),
           ...(this.title !== undefined && {title: this.title}),
           ...(this.autoApprove !== undefined && {autoApprove: this.autoApprove}),
-          ...(this.workflow !== undefined && {workflow: this.workflow}),
+          ...(this.workflowInfo !== undefined && {workflow: this.workflowInfo}),
           ...(this.assignTo && {assignTo: this.assignTo}),
           ...(this.assignToGroups && {assignToGroups: this.assignToGroups}),
           ...(this.reviewIdToUpdate && {updateForReviewId: this.reviewIdToUpdate}),

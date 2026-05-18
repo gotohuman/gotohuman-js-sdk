@@ -43,7 +43,7 @@ const reviewRequest = gotoHuman.createReview(GOTOHUMAN_TEMPLATE_ID)
 await reviewRequest.sendRequest()
 ```
 
-Optionally, set a title, webhook URL, auto-approve flag, or workflow config on the request:
+Optionally, set config, title, webhook URL, auto-approve flag, or workflow info on the request:
 ```
 const reviewRequest = gotoHuman.createReview(GOTOHUMAN_TEMPLATE_ID)
     .setReviewData({ ... })
@@ -51,7 +51,7 @@ const reviewRequest = gotoHuman.createReview(GOTOHUMAN_TEMPLATE_ID)
     .setTitle("Review AI draft")
     .setWebhookUrl("https://your-app.com/webhook")
     .setAutoApprove(false)
-    .setWorkflow({ runId: "abc123" })
+    .setWorkflowInfo({ runId: "abc123" })
 await reviewRequest.sendRequest()
 ```
 
