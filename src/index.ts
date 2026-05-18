@@ -27,12 +27,19 @@ export type ReviewResponse = {
   gthLink?: string;
 };
 
+
 export class Review {
+  private reviewData?: Record<string, JsonValue>;
   private fields: FormFields = {};
   private meta: FormFields = {};
   private assignTo?: string[];
   private assignToGroups?: string[];
   private reviewIdToUpdate?: string;
+  private reviewConfig?: Record<string, JsonValue>;
+  private webhookUrl?: string;
+  private title?: string;
+  private autoApprove?: boolean;
+  private workflow?: Record<string, JsonValue>;
 
   constructor(
     private readonly formId: string,
@@ -44,7 +51,15 @@ export class Review {
   ) {}
 
   /**
-   * Add a field value to the review
+   * Set the review data (arbitrary object passed to the reviewer)
+   */
+  setReviewData(data: Record<string, JsonValue>): Review {
+    this.reviewData = data;
+    return this;
+  }
+
+  /**
+   * @deprecated Use setReviewData instead
    */
   addFieldData(fieldName: string, value?: JsonValue): Review {
     if (value)
@@ -53,7 +68,7 @@ export class Review {
   }
 
   /**
-   * Set multiple field values at once
+   * @deprecated Use setReviewData instead
    */
   setFieldsData(fields?: FormFields): Review {
     if (fields)
@@ -62,10 +77,38 @@ export class Review {
   }
 
   /**
-   * Clear all fields in the current review
+   * @deprecated Use setReviewData instead
    */
   clearFieldData(): Review {
     this.fields = {};
+    return this;
+  }
+
+  setWebhookUrl(webhookUrl: string): Review {
+    this.webhookUrl = webhookUrl;
+    return this;
+  }
+
+  setTitle(title: string): Review {
+    this.title = title;
+    return this;
+  }
+
+  setAutoApprove(autoApprove: boolean): Review {
+    this.autoApprove = autoApprove;
+    return this;
+  }
+
+  setWorkflow(workflow: Record<string, JsonValue>): Review {
+    this.workflow = workflow;
+    return this;
+  }
+
+  /**
+   * Set review configuration options (sent as `config` in API body)
+   */
+  setReviewConfig(config: Record<string, JsonValue>): Review {
+    this.reviewConfig = { ...this.reviewConfig, ...config };
     return this;
   }
 
@@ -126,8 +169,13 @@ export class Review {
         },
         body: JSON.stringify({
           formId: this.formId,
-          fields: this.fields,
+          fields: { ...this.fields, ...this.reviewData },
           meta: this.meta,
+          ...(this.reviewConfig && {config: this.reviewConfig}),
+          ...(this.webhookUrl !== undefined && {webhookUrl: this.webhookUrl}),
+          ...(this.title !== undefined && {title: this.title}),
+          ...(this.autoApprove !== undefined && {autoApprove: this.autoApprove}),
+          ...(this.workflow !== undefined && {workflow: this.workflow}),
           ...(this.assignTo && {assignTo: this.assignTo}),
           ...(this.assignToGroups && {assignToGroups: this.assignToGroups}),
           ...(this.reviewIdToUpdate && {updateForReviewId: this.reviewIdToUpdate}),
