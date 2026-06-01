@@ -48,7 +48,8 @@ export class Review {
     private readonly baseUrl: string,
     private readonly fetchImpl: FetchLike,
     private readonly origin: string,
-    private readonly originV: string
+    private readonly originV: string,
+    private readonly agentId?: string,
   ) {}
 
   /**
@@ -177,6 +178,7 @@ export class Review {
           ...(this.title !== undefined && {title: this.title}),
           ...(this.autoApprove !== undefined && {autoApprove: this.autoApprove}),
           ...(this.workflowInfo !== undefined && {workflow: this.workflowInfo}),
+          ...(this.agentId !== undefined && {agentId: this.agentId}),
           ...(this.assignTo && {assignTo: this.assignTo}),
           ...(this.assignToGroups && {assignToGroups: this.assignToGroups}),
           ...(this.reviewIdToUpdate && {updateForReviewId: this.reviewIdToUpdate}),
@@ -223,11 +225,11 @@ export class GotoHuman {
   /**
    * Initialize a new review with a review template ID
    */
-  createReview(formId: string | undefined): Review {
+  createReview(formId: string | undefined, agentId?: string): Review {
     if (!formId) {
       throw new Error('Please pass a review template ID');
     }
-    return new Review(formId, this.apiKey, this.baseUrl, this.fetchImpl, this.origin, this.originV);
+    return new Review(formId, this.apiKey, this.baseUrl, this.fetchImpl, this.origin, this.originV, agentId);
   }
 
   /**
