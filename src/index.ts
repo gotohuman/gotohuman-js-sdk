@@ -204,11 +204,12 @@ export class Review {
 export class GotoHuman {
   private baseUrl: string;
   private apiKey: string;
+  private agentId?: string;
   private fetchImpl: FetchLike;
   private origin: string;
   private originV: string;
 
-  constructor(params?: { apiKey?: string } & GotoHumanConfig) {
+  constructor(params?: { apiKey?: string; agentId?: string } & GotoHumanConfig) {
     const apiKey = params?.apiKey || GotoHuman.getApiKeyFromEnv();
     this.apiKey = apiKey || '';
     
@@ -216,6 +217,7 @@ export class GotoHuman {
       throw new Error('API key is required. Provide it in params or set the GOTOHUMAN_API_KEY environment variable.');
     }
 
+    this.agentId = params?.agentId || GotoHuman.getAgentIdFromEnv();
     this.baseUrl = params?.baseUrl || GotoHuman.getBaseUrlFromEnv() || 'https://api.gotohuman.com';
     this.fetchImpl = params?.fetch || globalThis.fetch;
     this.origin = params?.origin || "ts-sdk";
@@ -225,11 +227,11 @@ export class GotoHuman {
   /**
    * Initialize a new review with a review template ID
    */
-  createReview(formId: string | undefined, agentId?: string): Review {
+  createReview(formId: string | undefined): Review {
     if (!formId) {
       throw new Error('Please pass a review template ID');
     }
-    return new Review(formId, this.apiKey, this.baseUrl, this.fetchImpl, this.origin, this.originV, agentId);
+    return new Review(formId, this.apiKey, this.baseUrl, this.fetchImpl, this.origin, this.originV, this.agentId);
   }
 
   /**
@@ -304,6 +306,17 @@ export class GotoHuman {
     // Ensure this code runs only in Node.js environments
     if (typeof process !== 'undefined' && process.env && process.env.GOTOHUMAN_API_KEY) {
       return process.env.GOTOHUMAN_API_KEY;
+    }
+    return undefined;
+  }
+
+  /**
+   * Retrieves the agent ID from the environment variable.
+   * @returns The agent ID if set, otherwise undefined.
+   */
+  private static getAgentIdFromEnv(): string | undefined {
+    if (typeof process !== 'undefined' && process.env && process.env.GOTOHUMAN_AGENT_ID) {
+      return process.env.GOTOHUMAN_AGENT_ID;
     }
     return undefined;
   }
