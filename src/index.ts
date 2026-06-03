@@ -40,7 +40,9 @@ export class Review {
   private webhookUrl?: string;
   private title?: string;
   private autoApprove?: boolean;
+  /** @deprecated */
   private workflowInfo?: Record<string, JsonValue>;
+  private sessionId?: string;
 
   constructor(
     private readonly formId: string,
@@ -101,8 +103,19 @@ export class Review {
     return this;
   }
 
+  /**
+   * @deprecated Use setSessionId instead
+   */
   setWorkflowInfo(workflowInfo: Record<string, JsonValue>): Review {
     this.workflowInfo = workflowInfo;
+    return this;
+  }
+
+  /**
+   * Set a session ID to group related review requests
+   */
+  setSessionId(sessionId: string): Review {
+    this.sessionId = sessionId;
     return this;
   }
 
@@ -178,6 +191,7 @@ export class Review {
           ...(this.title !== undefined && {title: this.title}),
           ...(this.autoApprove !== undefined && {autoApprove: this.autoApprove}),
           ...(this.workflowInfo !== undefined && {workflow: this.workflowInfo}),
+          ...(this.sessionId !== undefined && {sessionId: this.sessionId}),
           ...(this.agentId !== undefined && {agentId: this.agentId}),
           ...(this.assignTo && {assignTo: this.assignTo}),
           ...(this.assignToGroups && {assignToGroups: this.assignToGroups}),
