@@ -21,37 +21,35 @@ Set up a fully customized review step capturing any relevant data (text, images,
 
 ### Init
 
+Set environment variables with your gotoHuman API key and the ID of your [agent](https://docs.gotohuman.com/agent-setup):
+
+```bash
+GOTOHUMAN_API_KEY=YOUR_API_KEY
+GOTOHUMAN_AGENT_ID=YOUR_AGENT_ID
 ```
-const gotoHuman = new GotoHuman(GOTOHUMAN_API_KEY)
+
+```js
+import { GotoHuman } from 'gotohuman'
+
+const gotoHuman = new GotoHuman()
 ```
 
 ### Send request
 
 [Read the docs](https://docs.gotohuman.com/send-requests) for more details.
 
-Pass the review template ID from your gotoHuman dashboard.
+Pass the ID of the review type created in gotoHuman.
 
 Example request:
-```
-const reviewRequest = gotoHuman.createReview(GOTOHUMAN_TEMPLATE_ID)
-    .setReviewData({
-        exampleField1: value1,
-        exampleField2: value2,
-    })
-    .addMetaData("threadId", threadId)
-    .assignToUsers(["jess@acme.org"])
-await reviewRequest.sendRequest()
-```
+```js
+const reviewRequest = gotoHuman.createReview("YOUR_REVIEW_TYPE_ID")
+  .setReviewData({
+    "example1": "value1",
+    "example2": true,
+  })
+  .setReviewConfig({...})
+  .setMetaData({...})
 
-Optionally, set config, title, webhook URL, auto-approve flag, or workflow info on the request:
-```
-const reviewRequest = gotoHuman.createReview(GOTOHUMAN_TEMPLATE_ID)
-    .setReviewData({ ... })
-    .setReviewConfig({ someConfigKey: "value" })
-    .setTitle("Review AI draft")
-    .setWebhookUrl("https://your-app.com/webhook")
-    .setAutoApprove(false)
-    .setWorkflowInfo({ runId: "abc123" })
 await reviewRequest.sendRequest()
 ```
 
